@@ -1,26 +1,41 @@
 import React from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Dropdown from './Dropdown';
+import {getDropdownData} from './api';
+export default class App extends React.Component{
+  constructor(props) {
+    super(props);
+    this.ddlList = this.ddlList.bind(this);
+    this.state = {
+      options: {}
+    }
+  }
+  componentDidMount(){
+    this.ddlList();
+  }
+  render() {
+    return (
+      <div className="App">
+        <Dropdown
+          id          = {'employeeList'}
+          name        = {'employeeList'}
+          options     = {this.state.options}
+          labelName   = {'Employees List'}
+        />
+      </div>
+    );
+  }
+  ddlList = () => {
+    getDropdownData( (res) => {
+      let arr = [];
+      let options = res.map((data,id) => {
+        arr['id'] = data.id;
+        arr['name'] = data.employee_name;
+        return arr;
+      })
+      this.setState({options:options});
+    });
+  }
 }
 
-export default App;
